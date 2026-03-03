@@ -6,33 +6,69 @@
 using namespace std;
 
 /*******************************************************************************
- * Function prototype
+ * Time Complexity (findMaxRecTail):
+ * - One recursive call per element, constant work each call.
+ * - T(n) = T(n-1) + O(1) => O(n) time.
+ * - Recursion depth O(n).
+ *
+ * Time Complexity (findMaxRecBinarySplit):
+ * - Splits into halves and combines with one comparison.
+ * - T(n) = 2T(n/2) + O(1) => O(n) time.
+ * - Recursion depth O(log n).
+*******************************************************************************/
+
+/*******************************************************************************
+ * Function prototypes
 *******************************************************************************/
 
 template <typename T>
-T findMaxRecTail(const T[] arr, const int size, int = 0)
-{
-    // TO DO: Implement your code
-}
+T findMaxRecTail(const T arr[], const int size, int i = 0);
 
 template <typename T>
-T findMaxRecBinarySplit(const T[] arr, const int left, const int right)
-{
-    // TO DO: Implement your code
+T findMaxRecBinarySplit(const T arr[], const int left, const int right);
+
+/*******************************************************************************
+ * Helper for tail recursion (accumulator style)
+*******************************************************************************/
+template <typename T>
+T findMaxRecTailHelper(const T arr[], const int size, int i, T currentMax) {
+    if (i >= size) return currentMax;
+    if (arr[i] > currentMax) currentMax = arr[i];
+    return findMaxRecTailHelper(arr, size, i + 1, currentMax); // tail call
 }
+
+/*******************************************************************************
+ * Tail-recursive maximum
+*******************************************************************************/
+template <typename T>
+T findMaxRecTail(const T arr[], const int size, int i) {
+    // Assumes size > 0 (true for the provided main/tests)
+    if (i <= 0) return findMaxRecTailHelper(arr, size, 0, arr[0]);
+
+    // If someone calls with non-zero i, start from that index
+    if (i >= size) return arr[0]; // safety fallback (shouldn't happen in tests)
+    return findMaxRecTailHelper(arr, size, i, arr[i]);
+}
+
+/*******************************************************************************
+ * Binary-split recursive maximum
+*******************************************************************************/
+template <typename T>
+T findMaxRecBinarySplit(const T arr[], const int left, const int right) {
+    if (left == right) return arr[left];
+
+    int mid = left + (right - left) / 2;
+    T maxL = findMaxRecBinarySplit(arr, left, mid);
+    T maxR = findMaxRecBinarySplit(arr, mid + 1, right);
+    return (maxL > maxR) ? maxL : maxR;
+}
+
 /*******************************************************************************
  * Description:
  * Starting point of the program. Creates two arrays, one fixed and the other
  * random. Determines the maximum value by calling the local function and the
  * standard function.
- * 
- * Input:
- * N/A
- *
- * Output:
- * An integer to signal to the OS the exit code.
 *******************************************************************************/
-
 int main() {
     // create the array
     const int SIZE = 10;
@@ -44,9 +80,9 @@ int main() {
     // display the maximum
     cout << setfill('-') << setw(40) << "" << endl;
     cout << "Maximum using Recursion: "
-         << findMaxRecTail(myArray, SIZE) << endl 
-         << "From Binary split:" 
-        << findMaxRecBinarySplit(myArray, 0, SIZE-1)
+         << findMaxRecTail(myArray, SIZE) << endl
+         << "From Binary split:"
+         << findMaxRecBinarySplit(myArray, 0, SIZE - 1)
          << "Should be 130 for the fixed array\n";
     cout << setfill('-') << setw(40) << "" << endl << endl;
 
@@ -72,4 +108,3 @@ int main() {
     // terminate
     return 0;
 }
-

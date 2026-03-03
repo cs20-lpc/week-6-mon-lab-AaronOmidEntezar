@@ -1,41 +1,32 @@
-// part-b.cpp
-
 #include <iomanip>
 #include <iostream>
 #include <string>
 using namespace std;
 
 /*******************************************************************************
- * Time Complexity (towerHanoi):
- * - Recurrence: T(n) = 2T(n-1) + O(1)
- * - T(n) = O(2^n) moves/prints
- * - Recursion depth O(n)
+ * Time Complexity:
+ * Tower of Hanoi makes (2^n - 1) moves => O(2^n) time
+ * Recursion depth: O(n)
 *******************************************************************************/
 
 /*******************************************************************************
  * Function prototype
 *******************************************************************************/
-
 void towerHanoi(int, string, string, string, int&);
 
 /*******************************************************************************
  * Function definition
 *******************************************************************************/
-
-void towerHanoi(int numDisks, string source, string buffer, string target, int& numMoves)
-{
+void towerHanoi(int numDisks, string source, string buffer, string target, int& numMoves) {
     if (numDisks == 0) return;
 
-    // move n-1 from source to buffer using target
     towerHanoi(numDisks - 1, source, target, buffer, numMoves);
 
-    // move nth disk from source to target
     cout << "Moving disc " << numDisks
          << " from " << source
          << " to " << target << endl;
     numMoves++;
 
-    // move n-1 from buffer to target using source
     towerHanoi(numDisks - 1, buffer, source, target, numMoves);
 }
 
@@ -43,14 +34,7 @@ void towerHanoi(int numDisks, string source, string buffer, string target, int& 
  * Description:
  * Starting point of the program. Calls a function to recursively determine
  * solutions for the first 5 instances of the Tower of Hanoi problem.
- *
- * Input:
- * N/A
- *
- * Output:
- * An integer to signal to the OS the exit code.
 *******************************************************************************/
-
 int main() {
     // solve the first 5 cases of the Tower of Hanoi problem
     for (int i = 1, numMoves = 0; i <= 5; i++, numMoves = 0) {
